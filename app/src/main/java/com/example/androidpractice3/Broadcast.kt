@@ -20,10 +20,15 @@ class Broadcast : BroadcastReceiver() {
             ) != 0
             if (wifiModeOn) {
                 notification.setContentText("wifi is active")
-                service.startForeground(10, notification.build());
+                service.startForeground(10, notification.build())
+                val fileWriter = FileWriter()
+                fileWriter.writeData("wifi broadcast", "active")
             } else {
                 notification.setContentText("wifi is not active")
-                service.startForeground(10, notification.build());
+                service.startForeground(10, notification.build())
+                val fileWriter = FileWriter()
+                fileWriter.writeData("wifi broadcast", "not active")
+
             }
 
         }

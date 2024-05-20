@@ -7,8 +7,9 @@ import org.json.JSONObject
 import java.io.File
 import java.util.Calendar
 
-class FileWriter(private val context: Context) {
-    fun writeData(type:String, value: String) {
+class FileWriter() {
+
+    fun writeData(type: String, value: String) {
         val jsonObject = JSONObject()
         jsonObject.put("type", type)
         jsonObject.put("time", Calendar.getInstance().time)
@@ -21,6 +22,7 @@ class FileWriter(private val context: Context) {
         try {
             file.createNewFile()
             file.appendText(jsonObject.toString())
+            file.appendText("\n")
         } catch (e: Exception) {
             Log.e("FileWriter", "Error writing to file: ${e.message}")
         }
