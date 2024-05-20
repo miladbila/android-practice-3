@@ -43,13 +43,14 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AndroidPractice3Theme {
-                    LaunchedEffect(key1 = Unit) {
+                LaunchedEffect(key1 = Unit) {
                     val workManager = WorkManager.getInstance(applicationContext)
                     workManager.enqueueUniquePeriodicWork(
                         "myWorkerName",
                         ExistingPeriodicWorkPolicy.REPLACE,
                         workRequest
                     )
+                }
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
@@ -61,7 +62,7 @@ class MainActivity : ComponentActivity() {
                             startService(it)
                         }
                     }) {
-                        Text(text="Star Service")
+                        Text(text = "Star Service")
                     }
 
                     Button(onClick = {
@@ -70,7 +71,7 @@ class MainActivity : ComponentActivity() {
                             startService(it)
                         }
                     }) {
-                        Text(text="Stop Service")
+                        Text(text = "Stop Service")
                     }
                 }
             }
