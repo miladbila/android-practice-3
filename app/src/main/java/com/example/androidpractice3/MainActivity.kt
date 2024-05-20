@@ -86,7 +86,7 @@ class MainActivity : ComponentActivity() {
                     line = bufferedReader.readLine()
                 }
                 bufferedReader.close()
-
+                data.reverse()
                 LazyColumn {
                     items(data) {
                         Info(type = it.type, time = it.time, value = it.value)
