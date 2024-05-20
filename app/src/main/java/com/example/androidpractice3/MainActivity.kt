@@ -3,45 +3,38 @@ package com.example.androidpractice3
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.LaunchedEffect
+import androidx.work.BackoffPolicy
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.androidpractice3.ui.theme.AndroidPractice3Theme
+import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        val workRequest = PeriodicWorkRequestBuilder<CustomWorker>(
+            repeatInterval = 15,
+            repeatIntervalTimeUnit = TimeUnit.MINUTES,
+        ).setBackoffCriteria(
+            backoffPolicy = BackoffPolicy.LINEAR,
+            duration = Duration.ofSeconds(15)
+        ).build()
+
+
         setContent {
             AndroidPractice3Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                LaunchedEffect(key1 = Unit) {
+                    val workManager = WorkManager.getInstance(applicationContext)
+                    workManager.enqueueUniquePeriodicWork(
+                        "myWorkerName",
+                        ExistingPeriodicWorkPolicy.REPLACE,
+                        workRequest
                     )
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AndroidPractice3Theme {
-        Greeting("Android")
     }
 }
