@@ -67,6 +67,9 @@ class MainActivity : ComponentActivity() {
                 val folder =
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                 val file = File(folder, fileName)
+                if (!file.exists()) {
+                    return@AndroidPractice3Theme
+                }
                 val fileReader = FileReader(file)
                 val bufferedReader = BufferedReader(fileReader)
                 var line = bufferedReader.readLine()
