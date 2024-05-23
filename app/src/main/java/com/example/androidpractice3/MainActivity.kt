@@ -63,30 +63,9 @@ class MainActivity : ComponentActivity() {
                         workRequest
                     )
                 }
-                val fileName = "info.json"
-                val folder =
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                val file = File(folder, fileName)
-                if (!file.exists()) {
-                    return@AndroidPractice3Theme
-                }
-                val fileReader = FileReader(file)
-                val bufferedReader = BufferedReader(fileReader)
-                var line = bufferedReader.readLine()
-                val data = mutableListOf<Data>()
-                while (line != null) {
-                    val jsonObject: JSONObject = JSONObject(line)
-                    data.add(
-                        Data(
-                            jsonObject.get("type").toString(),
-                            jsonObject.get("time").toString(),
-                            jsonObject.get("value").toString()
-                        )
-                    )
-                    line = bufferedReader.readLine()
-                }
-                bufferedReader.close()
-                data.reverse()
+
+                var data : List<Data> = FileWriter().readData()
+                data = data.reversed()
                 LazyColumn {
                     items(data) {
                         Info(type = it.type, time = it.time, value = it.value)
@@ -98,7 +77,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 @Composable
 fun Info(type: String, time: String, value: String) {
     Column {

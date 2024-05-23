@@ -4,7 +4,9 @@ import android.content.Context
 import android.os.Environment
 import android.util.Log
 import org.json.JSONObject
+import java.io.BufferedReader
 import java.io.File
+import java.io.FileReader
 import java.util.Calendar
 
 class FileWriter() {
@@ -17,7 +19,6 @@ class FileWriter() {
 
         val fileName = "info.json"
         val folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-//        val folder = context.filesDir
         val file = File(folder, fileName)
         try {
             file.createNewFile()
@@ -26,5 +27,32 @@ class FileWriter() {
         } catch (e: Exception) {
             Log.e("FileWriter", "Error writing to file: ${e.message}")
         }
+    }
+
+    fun readData(): List<Data>{
+        val fileName = "info.json"
+        val folder =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        val file = File(folder, fileName)
+        if (!file.exists()) {
+            return mutableListOf()
+        }
+        val fileReader = FileReader(file)
+        val bufferedReader = BufferedReader(fileReader)
+        var line = bufferedReader.readLine()
+        val data = mutableListOf<Data>()
+        while (line != null) {
+            val jsonObject = JSONObject(line)
+            data.add(
+                Data(
+                    jsonObject.get("type").toString(),
+                    jsonObject.get("time").toString(),
+                    jsonObject.get("value").toString()
+                )
+            )
+            line = bufferedReader.readLine()
+        }
+        bufferedReader.close()
+        return data
     }
 }
