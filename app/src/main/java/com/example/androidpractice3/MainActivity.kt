@@ -12,12 +12,22 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.ViewModel
 import androidx.work.BackoffPolicy
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
@@ -63,20 +73,33 @@ class MainActivity : ComponentActivity() {
                         workRequest
                     )
                 }
-
-                var data : List<Data> = FileWriter().readData()
-                data = data.reversed()
-                LazyColumn {
-                    items(data) {
-                        Info(type = it.type, time = it.time, value = it.value)
-                        Spacer(modifier = Modifier.padding(10.dp))
-                    }
-                }
-
+                MainScreen()
             }
         }
     }
 }
+
+@Composable
+fun MainScreen(mainActivityViewModel: MainActivityViewModel = MainActivityViewModel()) {
+    val uiState by mainActivityViewModel.uiState.collectAsState()
+
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(onClick = { mainActivityViewModel.loadData() }) {
+                Icon(Icons.Filled.Refresh, "")
+            }
+        }
+    ) { paddingValues ->
+        LazyColumn(Modifier.padding(paddingValues)) {
+            items(uiState.data) {
+                Info(type = it.type, time = it.time, value = it.value)
+                Spacer(modifier = Modifier.padding(10.dp))
+            }
+        }
+    }
+
+}
+
 @Composable
 fun Info(type: String, time: String, value: String) {
     Column {
